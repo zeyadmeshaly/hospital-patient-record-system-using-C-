@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+struct Patient {
+    int id;
+    string name;
+    int age;
+    string disease;
+};
+
+struct Node {
+    Patient data;
+    Node* next;
+};
+
+Node* head = nullptr;
+
+void addPatient(Patient p) {
+    Node* newNode = new Node;
+    newNode->data = p;
+    newNode->next = nullptr;
+
+    if (head == nullptr) {
+        head = newNode;
+    }
+    else {
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+}
+
+void display() {
+    if (head == nullptr) {
+        cout << "No patients.\n";
+        return;
+    }
+
+    Node* temp = head;
+    while (temp != nullptr) {
+        cout << "ID: " << temp->data.id << endl;
+        cout << "Name: " << temp->data.name << endl;
+        cout << "Age: " << temp->data.age << endl;
+        cout << "Disease: " << temp->data.disease << endl;
+        cout << "-------------------\n";
+        temp = temp->next;
+    }
+}
+
+void search(int id) {
+    Node* temp = head;
+
+    while (temp != nullptr) {
+        if (temp->data.id == id) {
+            cout << "Found: " << temp->data.name << endl;
+            return;
+        }
+        temp = temp->next;
+    }
+
+    cout << "Not found\n";
+}
+
+void deletePatient(int id) {
+    if (head == nullptr) {
+        cout << "List empty\n";
+        return;
+    }
+
+    if (head->data.id == id) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        cout << "Deleted\n";
+        return;
+    }
+
+    Node* curr = head;
+    Node* prev = nullptr;
+
+    while (curr != nullptr && curr->data.id != id) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr == nullptr) {
+        cout << "Not found\n";
+        return;
+    }
+
+    prev->next = curr->next;
+    delete curr;
+    cout << "Deleted\n";
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "\n1. Add\n2. Display\n3. Search\n4. Delete\n5. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            Patient p;
+
+            cout << "Enter ID: ";
+            cin >> p.id;
+            cin.ignore();
+
+            cout << "Enter Name: ";
+            getline(cin, p.name);
+
+            cout << "Enter Age: ";
+            cin >> p.age;
+            cin.ignore();
+
+            cout << "Enter Disease: ";
+            getline(cin, p.disease);
+
+            addPatient(p);
+        }
+
+        else if (choice == 2) {
+            display();
+        }
+
+        else if (choice == 3) {
+            int id;
+            cout << "Enter ID: ";
+            cin >> id;
+            search(id);
+        }
+
+        else if (choice == 4) {
+            int id;
+            cout << "Enter ID: ";
+            cin >> id;
+            deletePatient(id);
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
